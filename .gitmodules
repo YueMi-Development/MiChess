@@ -1,0 +1,6 @@
+[submodule "Website"]
+	path = Website
+	url = https://github.com/YueMi-Development/MiChess-Web.git
+[submodule "Engines"]
+	path = Engines
+	url = https://github.com/YueMi-Development/MiChess-Engine.git
