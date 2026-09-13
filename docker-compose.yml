@@ -55,23 +55,23 @@ services:
     networks:
       - michess-network
 
-  # MySQL Database
+  # MariaDB Database
   db:
-    image: mysql:8.0
+    image: mariadb:11
     container_name: michess-db
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=michess
-      - MYSQL_USER=michess
-      - MYSQL_PASSWORD=michess
-      - MYSQL_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=michess
+      - MARIADB_USER=michess
+      - MARIADB_PASSWORD=michess
+      - MARIADB_ROOT_PASSWORD=root
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - michess-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -92,5 +92,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:
+  mariadb_data:
   redis_data:
