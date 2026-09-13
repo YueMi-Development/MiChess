@@ -1,0 +1,24 @@
+# LICENSE
+
+## Root Repository Content
+
+Copyright (c) 2026 YueMi Development
+
+This repository (excluding submodules) is licensed under the **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+
+You are free to:
+- **Share** - copy and redistribute the material in any medium or format
+- **Adapt** - remix, transform, and build upon the material for any purpose, including commercially
+
+Under the following terms:
+- **Attribution** - You must give appropriate credit to YueMi Development, provide a link to the license, and indicate if changes were made.
+
+Full license: https://creativecommons.org/licenses/by/4.0/
+
+---
+
+## Submodules
+
+All submodules in this repository are **proprietary and private**. They are not covered by the CC BY 4.0 license above. No part of any submodule may be copied, redistributed, or used without explicit written permission from YueMi Development.
+
+Each submodule contains its own licensing terms in its respective `LICENSE` file.
