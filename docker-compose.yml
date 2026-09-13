@@ -7,11 +7,21 @@ services:
     container_name: michess-web
     ports:
       - "3000:80"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=michess
+      - DB_USERNAME=michess
+      - DB_PASSWORD=michess
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
     volumes:
-      - ./Website:/var/www/html
-      - ./Website/.env:/var/www/html/.env:ro
-      - ./Website/storage:/var/www/html/storage
-      - ./Website/node_modules:/var/www/html/node_modules:ro
+      - ./Website/.env.docker:/var/www/html/.env:ro
     depends_on:
       db:
         condition: service_healthy
@@ -20,7 +30,7 @@ services:
     networks:
       - michess-network
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost/" ]
+      test: ["CMD", "curl", "-f", "http://localhost/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -61,7 +71,7 @@ services:
     networks:
       - michess-network
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 10s
       timeout: 5s
       retries: 5
