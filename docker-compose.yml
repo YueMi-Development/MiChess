@@ -1,0 +1,86 @@
+services:
+  # Laravel Web Application
+  web:
+    build:
+      context: ./Website
+      dockerfile: Dockerfile
+    container_name: michess-web
+    ports:
+      - "3000:80"
+    volumes:
+      - ./Website:/var/www/html
+      - ./Website/.env:/var/www/html/.env:ro
+      - ./Website/storage:/var/www/html/storage
+      - ./Website/node_modules:/var/www/html/node_modules:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - michess-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Chess Engine (Normal Mode)
+  engine-normal:
+    build:
+      context: ./Engines
+      dockerfile: Dockerfile
+    container_name: michess-engine-normal
+    ports:
+      - "9001:9001"
+    environment:
+      - LARAVEL_ENDPOINT=http://web
+      - FRONTEND_ENDPOINT=http://localhost:3000
+      - ENGINE_PORT=9001
+      - PAIRING_KEY=normal_mode_pairing_key_32charsx
+    depends_on:
+      web:
+        condition: service_healthy
+    networks:
+      - michess-network
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: michess-db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=michess
+      - MYSQL_USER=michess
+      - MYSQL_PASSWORD=michess
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - michess-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and queues
+  redis:
+    image: redis:7-alpine
+    container_name: michess-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - michess-network
+
+networks:
+  michess-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
