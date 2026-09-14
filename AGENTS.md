@@ -111,9 +111,10 @@ Loaded by `src/config/config_loader.rs`, first match wins:
 1. `/app/config/config.yml`  2. `/app/config.yml`  3. `./config.yml`  4. `./config/config.yml`
 
 If none exists, defaults are used. Every value can be overridden by environment variable
-(`ENGINE_NAME`, `ENGINE_MODE`, `ENGINE_PORT`, `PAIRING_KEY`, `FRONTEND_ENDPOINT`,
-`LARAVEL_ENDPOINT`). See `Engines/config.yml.example`. `config.yml` is git-ignored because it
-contains the pairing key.
+(`ENGINE_NAME`, `ENGINE_MODE`, `ENGINE_PORT`, `ENGINE_ENDPOINT`, `PAIRING_KEY`,
+`FRONTEND_ENDPOINT`, `LARAVEL_ENDPOINT`). `ENGINE_ENDPOINT` is the host the browser uses to reach
+the engine socket, so it must not be the engine's `0.0.0.0` bind address. See
+`Engines/config.yml.example`. `config.yml` is git-ignored because it contains the pairing key.
 
 ## Architecture
 
@@ -189,7 +190,7 @@ These apply to all PHP work in `Website/`. `.claude/rules/` holds identical copi
   fresh random key at container start when `PAIRING_KEY` is unset. The pairing key is the only
   credential identifying an engine, and `GET /api/engines/{engine}` returns it in the response body.
 - The engine API routes are unauthenticated and include mutation endpoints (`register`,
-  `unregister`, and an unregistered `destroy`); restrict them at the network layer in production.
+  `unregister`, `generate-key`, and `destroy`); restrict them at the network layer in production.
 - `bootstrap/app.php` sets `trustProxies(at: '*')`, which trusts arbitrary forwarding headers — only
   safe behind a trusted reverse proxy.
 - The engine WebSocket server binds `0.0.0.0` and performs no authentication on the socket; any
